@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab & Game Fisika: Besaran & Satuan Kuliner Jatim</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        jatim: {
+                            gold: '#D97706',
+                            red: '#991B1B',
+                            amber: '#F59E0B',
+                            dark: '#1E1B18',
+                            cream: '#FEF3C7',
+                            green: '#059669',
+                            brown: '#78350F'
+                        }
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles & Visual Polish */
+        .wood-pattern {
+            background-color: #2a1f18;
+            background-image: radial-gradient(#423227 1px, transparent 1px), radial-gradient(#423227 1px, #2a1f18 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .interactive-scale {
+            touch-action: none;
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .pulse-anim {
+            animation: pulse-subtle 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-amber-50/50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-amber-200 selection:text-amber-900">
+
+    <!-- TOP NAVBAR & HEADER -->
+    <header class="bg-gradient-to-r from-amber-900 via-amber-800 to-red-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 bg-amber-500/20 border-2 border-amber-400/50 rounded-xl flex items-center justify-center text-amber-300 text-2xl shadow-inner">
+                    <i class="fa-solid fa-utensils"></i>
+                </div>
+                <div>
+                    <h1 class="font-outfit text-xl sm:text-2xl font-bold tracking-tight text-amber-100 flex items-center gap-2">
+                        Fisika Kuliner Jatim
+                        <span class="text-xs bg-amber-500/30 text-amber-200 border border-amber-400/30 px-2 py-0.5 rounded-full font-sans font-semibold">Kelas 10 SMA</span>
+                    </h1>
+                    <p class="text-xs text-amber-200/80">Petualangan Belajar Besaran, Satuan & Alat Ukur Fisika</p>
+                </div>
+            </div>
+
+            <!-- Header Stats Badge -->
+            <div class="flex items-center gap-3 sm:gap-4 bg-black/20 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10 text-xs sm:text-sm">
+                <div class="flex items-center gap-2" title="Poin Pengalaman Fisika">
+                    <i class="fa-solid fa-star text-amber-400 text-base"></i>
+                    <div>
+                        <div class="text-[10px] text-amber-200/70 uppercase font-bold tracking-wider">Skor</div>
+                        <div id="nav-score" class="font-bold text-white text-base">0</div>
+                    </div>
+                </div>
+                <div class="h-6 w-px bg-white/20"></div>
+                <div class="flex items-center gap-2" title="Lencana Gelar">
+                    <i class="fa-solid fa-award text-amber-400 text-base"></i>
+                    <div>
+                        <div class="text-[10px] text-amber-200/70 uppercase font-bold tracking-wider">Gelar</div>
+                        <div id="nav-rank" class="font-semibold text-amber-200 text-xs sm:text-sm">Asisten Dapur</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN TAB NAVIGATION -->
+        <div class="bg-amber-950/60 border-t border-amber-700/30 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto custom-scrollbar gap-2 py-2">
+                <button onclick="switchTab('materi')" id="tab-btn-materi" class="nav-tab-btn active px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 whitespace-nowrap bg-amber-500 text-slate-900 shadow-md">
+                    <i class="fa-solid fa-book-open"></i> 1. Ringkasan Materi
+                </button>
+                <button onclick="switchTab('lab')" id="tab-btn-lab" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 whitespace-nowrap text-amber-200 hover:bg-amber-800/50">
+                    <i class="fa-solid fa-microscope"></i> 2. Lab Alat Ukur Interaktif
+                </button>
+                <button onclick="switchTab('game')" id="tab-btn-game" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 whitespace-nowrap text-amber-200 hover:bg-amber-800/50">
+                    <i class="fa-solid fa-gamepad"></i> 3. Game Chef Fisika
+                </button>
+                <button onclick="switchTab('evaluasi')" id="tab-btn-evaluasi" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 whitespace-nowrap text-amber-200 hover:bg-amber-800/50">
+                    <i class="fa-solid fa-square-check"></i> 4. Uji Kompetensi & Sertifikat
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Custom Toast Notification Container -->
+        <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+        <!-- TAB 1: MATERI & RINGKASAN -->
+        <section id="tab-materi" class="tab-content block space-y-6">
+            <!-- Banner Intro -->
+            <div class="bg-gradient-to-r from-amber-700 via-amber-800 to-amber-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-10 text-white text-9xl font-bold select-none pointer-events-none">
+                    <i class="fa-solid fa-bowl-food"></i>
+                </div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="bg-amber-500/30 text-amber-200 border border-amber-300/30 text-xs px-3 py-1 rounded-full uppercase tracking-widest font-bold">Fisika X - Kurikulum Merdeka</span>
+                    <h2 class="text-2xl sm:text-4xl font-outfit font-extrabold mt-2 text-amber-100">Besaran & Satuan dalam Dapur Jawa Timur</h2>
+                    <p class="mt-2 text-amber-100/90 text-sm sm:text-base leading-relaxed">
+                        Memasak hidangan khas Jawa Timur seperti <strong>Rawon Surabaya</strong>, <strong>Soto Lamongan</strong>, dan <strong>Rujak Cingur</strong> membutuhkan kepastian takaran! Di sini kita mempelajari <strong>Besaran Pokok</strong>, <strong>Besaran Turunan</strong>, <strong>Satuan SI</strong>, <strong>Dimensi</strong>, serta penggunaan <strong>Alat Ukur Presisi</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Grid Cards Besaran Pokok & Turunan -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Card 1: 7 Besaran Pokok -->
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-amber-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b pb-3 mb-4">
+                            <h3 class="font-outfit text-xl font-bold text-amber-900 flex items-center gap-2">
+                                <i class="fa-solid fa-cubes text-amber-600"></i> 7 Besaran Pokok (SI)
+                            </h3>
+                            <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-lg font-semibold">Tabel Wajib</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-4">Besaran utama yang satuannya didefinisikan secara internasional dan tidak diturunkan dari besaran lain.</p>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs sm:text-sm">
+                                <thead>
+                                    <tr class="bg-amber-50 text-amber-900 border-b border-amber-200">
+                                        <th class="p-2.5 font-bold">Besaran</th>
+                                        <th class="p-2.5 font-bold">Satuan SI</th>
+                                        <th class="p-2.5 font-bold">Dimensi</th>
+                                        <th class="p-2.5 font-bold">Contoh Kuliner Jatim</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700">
+                                    <tr class="hover:bg-amber-50/50">
+                                        <td class="p-2.5 font-semibold">Massa</td>
+                                        <td class="p-2.5">Kilogram (kg)</td>
+                                        <td class="p-2.5 font-mono font-bold text-amber-700">[M]</td>
+                                        <td class="p-2.5">Massa daging sapi Rawon (500 g)</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/50">
+                                        <td class="p-2.5 font-semibold">Panjang</td>
+                                        <td class="p-2.5">Meter (m)</td>
+                                        <td class="p-2.5 font-mono font-bold text-amber-700">[L]</td>
+                                        <td class="p-2.5">Panjang irisan Tahu Tek Surabaya</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/50">
+                                        <td class="p-2.5 font-semibold">Waktu</td>
+                                        <td class="p-2.5">Sekon (s)</td>
+                                        <td class="p-2.5 font-mono font-bold text-amber-700">[T]</td>
+                                        <td class="p-2.5">Waktu perebusan Kluwek Rawon</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/50">
+                                        <td class="p-2.5 font-semibold">Suhu Termodinamika</td>
+                                        <td class="p-2.5">Kelvin (K)</td>
+                                        <td class="p-2.5 font-mono font-bold text-amber-700">[θ]</td>
+                                        <td class="p-2.5">Suhu kuah mendidih Soto Lamongan</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/50">
+                                        <td class="p-2.5 font-semibold">Kuat Arus Listrik</td>
+                                        <td class="p-2.5">Ampere (A)</td>
+                                        <td class="p-2.5 font-mono font-bold text-amber-700">[I]</td>
+                                        <td class="p-2.5">Arus kompor induksi warung modern</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/50">
+                                        <td class="p-2.5 font-semibold">Intensitas Cahaya</td>
+                                        <td class="p-2.5">Kandela (cd)</td>
+                                        <td class="p-2.5 font-mono font-bold text-amber-700">[J]</td>
+                                        <td class="p-2.5">Cahaya penerangan warung lesetan</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-50/50">
+                                        <td class="p-2.5 font-semibold">Jumlah Zat</td>
+                                        <td class="p-2.5">Mol (mol)</td>
+                                        <td class="p-2.5 font-mono font-bold text-amber-700">[N]</td>
+                                        <td class="p-2.5">Molekul garam NaCl bumbu Rujak</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Besaran Turunan & Dimensi -->
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-amber-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b pb-3 mb-4">
+                            <h3 class="font-outfit text-xl font-bold text-amber-900 flex items-center gap-2">
+                                <i class="fa-solid fa-calculator text-amber-600"></i> Besaran Turunan Dapur Jatim
+                            </h3>
+                            <span class="text-xs bg-red-100 text-red-800 px-2.5 py-1 rounded-lg font-semibold">Hasil Kombinasi</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-4">Besaran yang diturunkan dari perkalian/pembagian besaran pokok.</p>
+
+                        <div class="space-y-3 text-xs sm:text-sm">
+                            <div class="p-3 bg-amber-50/70 rounded-xl border border-amber-200/60 flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-slate-800">Volume Kuah Rawon ($V$)</div>
+                                    <div class="text-slate-500 text-xs">Panjang × Lebar × Tinggi ($m^3$)</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-mono bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold text-xs">[L]³</span>
+                                    <div class="text-[10px] text-slate-500 mt-1">SI: $m^3$ / Liter</div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-amber-50/70 rounded-xl border border-amber-200/60 flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-slate-800">Massa Jenis Petis Udang Sidoarjo ($\rho$)</div>
+                                    <div class="text-slate-500 text-xs">Massa / Volume ($\rho = m / V$)</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-mono bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold text-xs">[M][L]⁻³</span>
+                                    <div class="text-[10px] text-slate-500 mt-1">SI: $kg/m^3$</div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-amber-50/70 rounded-xl border border-amber-200/60 flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-slate-800">Gaya Mengulek Bumbu Rujak Cingur ($F$)</div>
+                                    <div class="text-slate-500 text-xs">Massa × Percepatan ($F = m \cdot a$)</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-mono bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold text-xs">[M][L][T]⁻²</span>
+                                    <div class="text-[10px] text-slate-500 mt-1">SI: Newton ($N$)</div>
+                                </div>
+                            </div>
+
+                            <div class="p-3 bg-amber-50/70 rounded-xl border border-amber-200/60 flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold text-slate-800">Tekanan Panci Presto Daging ($P$)</div>
+                                    <div class="text-slate-500 text-xs">Gaya / Luas Penampang ($P = F / A$)</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-mono bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold text-xs">[M][L]⁻¹[T]⁻²</span>
+                                    <div class="text-[10px] text-slate-500 mt-1">SI: Pascal ($Pa$)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Alat Ukur Ringkasan -->
+            <div class="bg-white rounded-2xl p-6 shadow-md border border-amber-100">
+                <h3 class="font-outfit text-xl font-bold text-amber-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-ruler-combined text-amber-600"></i> Alat Ukur Presisi di Dapur Fisika
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50 hover:border-amber-400 transition-colors">
+                        <div class="text-amber-700 font-bold text-base mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders"></i> Jangka Sorong
+                        </div>
+                        <p class="text-slate-600 mb-2">Mengukur diameter luar, diameter dalam, dan kedalaman benda dengan ketelitian <strong>0,01 cm (0,1 mm)</strong>.</p>
+                        <div class="bg-amber-100/70 text-amber-900 p-2 rounded text-xs font-medium">
+                            📌 Contoh: Mengukur ketebalan Tahu Goreng & Diameter Onde-Onde Mojokerto.
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50 hover:border-amber-400 transition-colors">
+                        <div class="text-amber-700 font-bold text-base mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-gear"></i> Mikrometer Sekrup
+                        </div>
+                        <p class="text-slate-600 mb-2">Mengukur ketebalan benda sangat tipis dengan tingkat ketelitian sangat tinggi yaitu <strong>0,01 mm (0,001 cm)</strong>.</p>
+                        <div class="bg-amber-100/70 text-amber-900 p-2 rounded text-xs font-medium">
+                            📌 Contoh: Mengukur ketebalan Kerupuk Udang Sidoarjo & Daun Pisang Bothok.
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50 hover:border-amber-400 transition-colors">
+                        <div class="text-amber-700 font-bold text-base mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced"></i> Neraca & Gelas Ukur
+                        </div>
+                        <p class="text-slate-600 mb-2">Mengukur massa zat padat/bumbu (gram/kg) serta volume zat cair kuah soto/rawon ($mL$/$m^3$).</p>
+                        <div class="bg-amber-100/70 text-amber-900 p-2 rounded text-xs font-medium">
+                            📌 Contoh: Penimbangan Kluwek Bumbu Rawon & Pengukuran Volume Kuah Soto.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: LAB ALAT UKUR INTERAKTIF -->
+        <section id="tab-lab" class="tab-content hidden space-y-6">
+            <!-- Lab Sub Header -->
+            <div class="bg-white rounded-2xl p-6 shadow-md border border-amber-100 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-outfit font-bold text-amber-950 flex items-center gap-2">
+                        <i class="fa-solid fa-compass-drafting text-amber-600"></i> Virtual Physics Kitchen Lab
+                    </h2>
+                    <p class="text-slate-600 text-xs sm:text-sm">Uji ketelitian alat ukur pada bahan-bahan makanan khas Jawa Timur secara realtime!</p>
+                </div>
+                <div class="flex items-center gap-2 bg-amber-100 p-1.5 rounded-xl border border-amber-200">
+                    <button onclick="switchLabSim('vernier')" id="lab-btn-vernier" class="lab-tab-btn active bg-amber-600 text-white font-semibold text-xs px-3 py-1.5 rounded-lg transition-all shadow-sm">
+                        Jangka Sorong
+                    </button>
+                    <button onclick="switchLabSim('micrometer')" id="lab-btn-micrometer" class="lab-tab-btn text-amber-900 font-semibold text-xs px-3 py-1.5 rounded-lg transition-all hover:bg-amber-200/60">
+                        Mikrometer Sekrup
+                    </button>
+                    <button onclick="switchLabSim('scale')" id="lab-btn-scale" class="lab-tab-btn text-amber-900 font-semibold text-xs px-3 py-1.5 rounded-lg transition-all hover:bg-amber-200/60">
+                        Neraca & Volume
+                    </button>
+                </div>
+            </div>
+
+            <!-- SIMULATOR 1: JANGKA SORONG -->
+            <div id="sim-vernier" class="lab-sim-container block bg-white rounded-2xl p-6 shadow-md border border-amber-100 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b pb-4">
+                    <div>
+                        <h3 class="font-outfit text-xl font-bold text-slate-800">Simulasi Jangka Sorong (Ketelitian 0,01 cm)</h3>
+                        <p class="text-xs text-slate-500">Geser rahang sorong untuk mengukur sampel sampel makanan khas Jawa Timur.</p>
+                    </div>
+                    <!-- Sample Selector -->
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-bold text-slate-700">Pilih Sampel:</label>
+                        <select id="vernier-sample-select" onchange="changeVernierSample()" class="bg-amber-50 border border-amber-300 rounded-lg text-xs font-semibold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="0">Bakso Malang (Diameter: 3.42 cm)</option>
+                            <option value="1">Tahu Goreng Kediri (Ketebalan: 4.16 cm)</option>
+                            <option value="2">Onde-Onde Mojokerto (Diameter: 2.75 cm)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Canvas / Interactive Vernier Graphic -->
+                <div class="wood-pattern rounded-2xl p-4 sm:p-6 shadow-inner border-2 border-amber-900/40 relative overflow-hidden flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center text-amber-200 text-xs mb-2">
+                        <span class="font-semibold"><i class="fa-solid fa-hand-pointer"></i> Seret slider rahang di bawah untuk mengapit objek:</span>
+                        <span id="vernier-sample-label" class="bg-amber-500/30 border border-amber-400/40 px-2 py-0.5 rounded text-amber-200 font-mono">Objek: Bakso Malang</span>
+                    </div>
+
+                    <!-- Canvas element for Vernier Caliper -->
+                    <div class="w-full overflow-x-auto bg-amber-950/80 rounded-xl p-2 border border-amber-700/50 flex justify-center">
+                        <canvas id="vernierCanvas" width="700" height="220" class="max-w-full h-auto cursor-grab active:cursor-grabbing"></canvas>
+                    </div>
+
+                    <!-- Slider Control -->
+                    <div class="w-full max-w-lg mt-4 bg-amber-900/80 backdrop-blur-md p-4 rounded-xl border border-amber-600/50 flex flex-col gap-2">
+                        <div class="flex justify-between text-xs text-amber-200 font-semibold">
+                            <span>Posisi Rahang Sorong (Geser):</span>
+                            <span id="vernier-slider-val" class="font-mono text-amber-400 text-sm">0.00 cm</span>
+                        </div>
+                        <input type="range" id="vernierSlider" min="0" max="6" step="0.01" value="0" oninput="updateVernierSim()" class="w-full accent-amber-500 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Verification Calculator Box -->
+                <div class="bg-amber-50/80 rounded-xl p-4 border border-amber-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-xs">
+                        <div class="font-bold text-amber-900 text-sm">Uji Pembacaan Anda:</div>
+                        <div class="text-slate-600">
+                            $\text{Hasil} = \text{Skala Utama (cm)} + (\text{Skala Nonius yang Berimpit} \times 0{,}01\text{ cm})$
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input type="number" id="user-vernier-ans" step="0.01" placeholder="cth: 3.42" class="w-28 px-3 py-2 rounded-lg border border-slate-300 text-sm font-mono text-center focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <span class="text-xs font-bold text-slate-600">cm</span>
+                        <button onclick="checkVernierAnswer()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all shadow-md">
+                            Periksa Pembacaan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIMULATOR 2: MIKROMETER SEKRUP -->
+            <div id="sim-micrometer" class="lab-sim-container hidden bg-white rounded-2xl p-6 shadow-md border border-amber-100 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b pb-4">
+                    <div>
+                        <h3 class="font-outfit text-xl font-bold text-slate-800">Simulasi Mikrometer Sekrup (Ketelitian 0,01 mm)</h3>
+                        <p class="text-xs text-slate-500">Putar selubung luar (thimble) untuk mengukur benda yang sangat tipis.</p>
+                    </div>
+                    <!-- Sample Selector -->
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs font-bold text-slate-700">Pilih Sampel:</label>
+                        <select id="micro-sample-select" onchange="changeMicroSample()" class="bg-amber-50 border border-amber-300 rounded-lg text-xs font-semibold px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="0">Kerupuk Udang Sidoarjo (Ketebalan: 2.34 mm)</option>
+                            <option value="1">Daun Pisang Bothok (Ketebalan: 0.48 mm)</option>
+                            <option value="2">Emping Melinjo Magetan (Ketebalan: 1.12 mm)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Canvas / Interactive Micrometer Graphic -->
+                <div class="wood-pattern rounded-2xl p-4 sm:p-6 shadow-inner border-2 border-amber-900/40 relative overflow-hidden flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center text-amber-200 text-xs mb-2">
+                        <span class="font-semibold"><i class="fa-solid fa-rotate-right"></i> Putar thimble sekrup untuk menjepit sampel:</span>
+                        <span id="micro-sample-label" class="bg-amber-500/30 border border-amber-400/40 px-2 py-0.5 rounded text-amber-200 font-mono">Objek: Kerupuk Udang</span>
+                    </div>
+
+                    <!-- Canvas element for Micrometer Screw Gauge -->
+                    <div class="w-full overflow-x-auto bg-amber-950/80 rounded-xl p-2 border border-amber-700/50 flex justify-center">
+                        <canvas id="microCanvas" width="700" height="220" class="max-w-full h-auto cursor-grab active:cursor-grabbing"></canvas>
+                    </div>
+
+                    <!-- Slider Control -->
+                    <div class="w-full max-w-lg mt-4 bg-amber-900/80 backdrop-blur-md p-4 rounded-xl border border-amber-600/50 flex flex-col gap-2">
+                        <div class="flex justify-between text-xs text-amber-200 font-semibold">
+                            <span>Posisi Spindle / Thimble (Putar Sekrup):</span>
+                            <span id="micro-slider-val" class="font-mono text-amber-400 text-sm">0.00 mm</span>
+                        </div>
+                        <input type="range" id="microSlider" min="0" max="5" step="0.01" value="0" oninput="updateMicroSim()" class="w-full accent-amber-500 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Verification Calculator Box -->
+                <div class="bg-amber-50/80 rounded-xl p-4 border border-amber-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-xs">
+                        <div class="font-bold text-amber-900 text-sm">Uji Pembacaan Anda:</div>
+                        <div class="text-slate-600">
+                            $\text{Hasil} = \text{Skala Utama (mm)} + (\text{Skala Putar/Nonius} \times 0{,}01\text{ mm})$
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <input type="number" id="user-micro-ans" step="0.01" placeholder="cth: 2.34" class="w-28 px-3 py-2 rounded-lg border border-slate-300 text-sm font-mono text-center focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <span class="text-xs font-bold text-slate-600">mm</span>
+                        <button onclick="checkMicroAnswer()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all shadow-md">
+                            Periksa Pembacaan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIMULATOR 3: NERACA & GELAS UKUR -->
+            <div id="sim-scale" class="lab-sim-container hidden bg-white rounded-2xl p-6 shadow-md border border-amber-100 space-y-6">
+                <div class="border-b pb-4">
+                    <h3 class="font-outfit text-xl font-bold text-slate-800">Lab Massa & Volume Dapur Rawon</h3>
+                    <p class="text-xs text-slate-500">Timbang bahan bumbu Rawon dan ukur volume kuah untuk menghitung massa jenis ($\rho = m/V$).</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Interactive Digital Scale Simulator -->
+                    <div class="bg-gradient-to-b from-slate-100 to-slate-200 p-6 rounded-2xl border border-slate-300 flex flex-col items-center justify-between min-h-[280px]">
+                        <div class="text-center">
+                            <span class="text-xs font-bold text-amber-800 uppercase tracking-wider">Timbangan Digital Bumbu Rawon</span>
+                            <div class="text-slate-500 text-xs">Pilih bumbu yang ditaruh di atas timbangan</div>
+                        </div>
+
+                        <!-- Object Display Area -->
+                        <div class="relative w-36 h-28 my-2 flex items-center justify-center bg-white/60 rounded-xl border border-slate-300 shadow-inner">
+                            <div id="scale-item-icon" class="text-5xl text-amber-800 transition-all duration-300">
+                                <i class="fa-solid fa-mortar-pestle"></i>
+                            </div>
+                        </div>
+
+                        <!-- Digital Readout Display -->
+                        <div class="w-full max-w-xs bg-slate-900 p-3 rounded-xl border-2 border-slate-700 text-center shadow-lg">
+                            <div class="text-[10px] text-green-400 font-mono tracking-widest uppercase">Digital Scale SI</div>
+                            <div id="scale-display" class="text-3xl font-mono font-bold text-green-400 tracking-wider">0.00 g</div>
+                        </div>
+
+                        <!-- Ingredient Buttons -->
+                        <div class="flex flex-wrap justify-center gap-2 mt-4">
+                            <button onclick="placeOnScale('kluwek', 150)" class="bg-amber-800 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-amber-900 transition-all font-semibold">
+                                🥣 Kluwek (150 g)
+                            </button>
+                            <button onclick="placeOnScale('daging', 500)" class="bg-red-800 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-red-900 transition-all font-semibold">
+                                🥩 Daging Sapi (500 g)
+                            </button>
+                            <button onclick="placeOnScale('petis', 250)" class="bg-slate-800 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-slate-900 transition-all font-semibold">
+                                🦐 Petis Udang (250 g)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Graduated Cylinder (Gelas Ukur) -->
+                    <div class="bg-gradient-to-b from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-200 flex flex-col items-center justify-between min-h-[280px]">
+                        <div class="text-center">
+                            <span class="text-xs font-bold text-blue-900 uppercase tracking-wider">Gelas Ukur Volume Kuah</span>
+                            <div class="text-slate-500 text-xs">Ukur volume zat cair kuah soto/rawon</div>
+                        </div>
+
+                        <!-- Graphic Gelas Ukur -->
+                        <div class="relative w-20 h-44 bg-white/80 border-2 border-slate-400 rounded-b-xl overflow-hidden flex flex-col justify-end shadow-md">
+                            <!-- Fluid Level -->
+                            <div id="liquid-level" class="w-full bg-amber-700/80 transition-all duration-500 relative" style="height: 40%;">
+                                <div class="absolute inset-0 bg-amber-600/30 animate-pulse"></div>
+                            </div>
+                            <!-- Scale Ticks -->
+                            <div class="absolute inset-0 flex flex-col justify-between p-1 text-[9px] font-mono font-bold text-slate-600 select-none pointer-events-none">
+                                <div>500 mL</div>
+                                <div>400 mL</div>
+                                <div>300 mL</div>
+                                <div>200 mL</div>
+                                <div>100 mL</div>
+                            </div>
+                        </div>
+
+                        <!-- Readout & Buttons -->
+                        <div class="text-center space-y-2 mt-2">
+                            <div id="cylinder-display" class="font-mono font-bold text-slate-800 text-lg">200 mL ($0{,}00020\text{ m}^3$)</div>
+                            <div class="flex justify-center gap-2">
+                                <button onclick="setLiquidVolume(100)" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded-lg hover:bg-blue-700">100 mL</button>
+                                <button onclick="setLiquidVolume(250)" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded-lg hover:bg-blue-700">250 mL</button>
+                                <button onclick="setLiquidVolume(500)" class="bg-blue-600 text-white text-xs px-2.5 py-1 rounded-lg hover:bg-blue-700">500 mL</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: GAME CHEF FISIKA -->
+        <section id="tab-game" class="tab-content hidden space-y-6">
+            <!-- Game Level Selection & Score Bar -->
+            <div class="bg-white rounded-2xl p-6 shadow-md border border-amber-100 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-outfit font-bold text-amber-950 flex items-center gap-2">
+                        <i class="fa-solid fa-hat-chef text-amber-600"></i> Game: Petualangan Chef Fisika Jatim
+                    </h2>
+                    <p class="text-slate-600 text-xs sm:text-sm">Selesaikan tantangan di warung-warung khas Jawa Timur!</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-slate-500">Pilih Level:</span>
+                    <button onclick="loadGameLevel(1)" id="lvl-btn-1" class="game-lvl-btn bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm">Level 1</button>
+                    <button onclick="loadGameLevel(2)" id="lvl-btn-2" class="game-lvl-btn bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl">Level 2</button>
+                    <button onclick="loadGameLevel(3)" id="lvl-btn-3" class="game-lvl-btn bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl">Level 3</button>
+                </div>
+            </div>
+
+            <!-- LEVEL 1 GAME: SORTING BESARAN POKOK VS TURUNAN -->
+            <div id="game-level-1" class="game-level-block block bg-white rounded-2xl p-6 shadow-md border border-amber-100 space-y-6">
+                <div class="bg-gradient-to-r from-amber-800 to-amber-900 text-white p-4 sm:p-6 rounded-xl flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <span class="bg-amber-500/30 text-amber-200 border border-amber-400/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Level 1: Pasar Tradisional Surabaya</span>
+                        <h3 class="text-xl font-bold font-outfit mt-1">Pemilahan Besaran Pokok vs Besaran Turunan</h3>
+                        <p class="text-xs text-amber-100/90">Klik atau geser kartu parameter kuliner di bawah ke keranjang yang tepat!</p>
+                    </div>
+                    <div class="bg-black/30 backdrop-blur-md px-4 py-2 rounded-xl text-center border border-white/10">
+                        <div class="text-[10px] text-amber-200 uppercase font-bold">Progres Pemilahan</div>
+                        <div id="lvl1-progress" class="text-lg font-bold font-mono text-amber-400">0 / 8 Terpilih</div>
+                    </div>
+                </div>
+
+                <!-- Card Spawner / Active Cards -->
+                <div class="space-y-2">
+                    <div class="text-xs font-bold text-slate-700">Kartu Parameter Kuliner Aktif:</div>
+                    <div id="lvl1-cards-container" class="flex flex-wrap gap-3 min-h-[90px] p-4 bg-amber-50/60 rounded-xl border-2 border-dashed border-amber-300 items-center justify-center">
+                        <!-- Cards will be populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Baskets Target -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Target Basket 1: Besaran Pokok -->
+                    <div onclick="sortCardTo('pokok')" class="bg-gradient-to-b from-amber-50 to-orange-50 border-2 border-amber-400 rounded-2xl p-5 hover:border-amber-600 transition-all cursor-pointer flex flex-col items-center justify-between min-h-[180px] shadow-sm">
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center text-xl shadow-md mx-auto mb-2">
+                                <i class="fa-solid fa-box-archive"></i>
+                            </div>
+                            <h4 class="font-outfit font-bold text-amber-900 text-lg">Keranjang Besaran Pokok</h4>
+                            <p class="text-xs text-slate-500">Massa, Panjang, Waktu, Suhu, Arus, Cahaya, Jumlah Zat</p>
+                        </div>
+                        <div id="basket-pokok-list" class="w-full flex flex-wrap justify-center gap-1.5 mt-3 min-h-[40px]">
+                            <!-- Sorted items drop here -->
+                        </div>
+                    </div>
+
+                    <!-- Target Basket 2: Besaran Turunan -->
+                    <div onclick="sortCardTo('turunan')" class="bg-gradient-to-b from-amber-50 to-yellow-50 border-2 border-amber-400 rounded-2xl p-5 hover:border-amber-600 transition-all cursor-pointer flex flex-col items-center justify-between min-h-[180px] shadow-sm">
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-amber-600 text-white rounded-full flex items-center justify-center text-xl shadow-md mx-auto mb-2">
+                                <i class="fa-solid fa-boxes-stacked"></i>
+                            </div>
+                            <h4 class="font-outfit font-bold text-amber-950 text-lg">Keranjang Besaran Turunan</h4>
+                            <p class="text-xs text-slate-500">Volume, Massa Jenis, Gaya, Tekanan, Kecepatan, Luas</p>
+                        </div>
+                        <div id="basket-turunan-list" class="w-full flex flex-wrap justify-center gap-1.5 mt-3 min-h-[40px]">
+                            <!-- Sorted items drop here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEVEL 2 GAME: CHEF CALCULATION & CONVERSION CHALLENGE -->
+            <div id="game-level-2" class="game-level-block hidden bg-white rounded-2xl p-6 shadow-md border border-amber-100 space-y-6">
+                <div class="bg-gradient-to-r from-amber-800 to-amber-900 text-white p-4 sm:p-6 rounded-xl flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <span class="bg-amber-500/30 text-amber-200 border border-amber-400/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Level 2: Dapur Rawon & Soto Lamongan</span>
+                        <h3 class="text-xl font-bold font-outfit mt-1">Perhitungan Konversi Satuan & Massa Jenis</h3>
+                        <p class="text-xs text-amber-100/90">Bantu Chef menghitung besaran kuah dan bumbu secara presisi!</p>
+                    </div>
+                    <div id="lvl2-score-badge" class="bg-black/30 backdrop-blur-md px-4 py-2 rounded-xl text-center border border-white/10">
+                        <div class="text-[10px] text-amber-200 uppercase font-bold">Soal Chef</div>
+                        <div id="lvl2-question-num" class="text-lg font-bold font-mono text-amber-400">1 dari 4</div>
+                    </div>
+                </div>
+
+                <!-- Interactive Question Card Container -->
+                <div id="lvl2-card-box" class="bg-amber-50/70 p-6 rounded-2xl border border-amber-200 space-y-4">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- LEVEL 3 GAME: SPEED MATCHING DIMENSI & SATUAN FESTIVAL -->
+            <div id="game-level-3" class="game-level-block hidden bg-white rounded-2xl p-6 shadow-md border border-amber-100 space-y-6">
+                <div class="bg-gradient-to-r from-amber-800 to-amber-900 text-white p-4 sm:p-6 rounded-xl flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <span class="bg-amber-500/30 text-amber-200 border border-amber-400/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Level 3: Festival Kuliner Jawa Timur</span>
+                        <h3 class="text-xl font-bold font-outfit mt-1">Master Dimensi & Satuan SI</h3>
+                        <p class="text-xs text-amber-100/90">Pasangkan besaran kuliner dengan lambang dimensi dan satuan SI yang benar!</p>
+                    </div>
+                </div>
+
+                <div id="lvl3-grid-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Cards created by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: UJI KOMPETENSI & SERTIFIKAT -->
+        <section id="tab-evaluasi" class="tab-content hidden space-y-6">
+            <!-- Header Evaluation -->
+            <div class="bg-white rounded-2xl p-6 shadow-md border border-amber-100 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-outfit font-bold text-amber-950 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-amber-600"></i> Evaluasi & Certificate Generator
+                    </h2>
+                    <p class="text-slate-600 text-xs sm:text-sm">Uji kemampuan akhir besaran & satuan fisikamu untuk mengklaim Gelar Master Chef Fisika Jatim!</p>
+                </div>
+                <button onclick="startQuiz()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-play"></i> Mulai Uji Kompetensi
+                </button>
+            </div>
+
+            <!-- Quiz Container -->
+            <div id="quiz-active-box" class="bg-white rounded-2xl p-6 shadow-md border border-amber-100 hidden space-y-6">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <span id="quiz-q-num" class="text-xs font-bold text-amber-800 uppercase tracking-wider">Soal 1 dari 5</span>
+                    <span id="quiz-timer" class="text-xs font-mono font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full"><i class="fa-regular fa-clock"></i> 00:00</span>
+                </div>
+
+                <div id="quiz-question-text" class="text-base font-semibold text-slate-800 leading-relaxed">
+                    <!-- Question text JS -->
+                </div>
+
+                <div id="quiz-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Option buttons JS -->
+                </div>
+
+                <div class="flex justify-end pt-4 border-t">
+                    <button onclick="nextQuizQuestion()" id="quiz-next-btn" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md transition-all">
+                        Lanjut Soal <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Certificate Result Box -->
+            <div id="cert-box" class="bg-white rounded-2xl p-6 sm:p-8 shadow-xl border border-amber-200 text-center space-y-6">
+                <div class="max-w-2xl mx-auto space-y-2">
+                    <div class="w-16 h-16 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center text-3xl mx-auto shadow-inner border border-amber-300">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <h3 class="text-2xl font-outfit font-extrabold text-amber-950">Sertifikat Kelulusan Fisika Kuliner Jatim</h3>
+                    <p class="text-xs text-slate-500">Selesaikan semua tantangan & uji kompetensi di atas untuk mencetak sertifikat resmimu!</p>
+                </div>
+
+                <!-- Certificate Display Card -->
+                <div id="printable-certificate" class="wood-pattern p-6 sm:p-10 rounded-2xl border-4 border-amber-600 shadow-2xl text-amber-100 max-w-3xl mx-auto relative overflow-hidden">
+                    <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px]"></div>
+                    <div class="relative z-10 border-2 border-amber-400/60 p-6 sm:p-8 rounded-xl bg-amber-950/80 space-y-4">
+                        <div class="flex justify-between items-center text-xs text-amber-300 border-b border-amber-500/30 pb-3">
+                            <span class="font-bold tracking-widest uppercase">LAB FISIKA SMA KELAS X</span>
+                            <span class="font-mono">KULINER JAWA TIMUR</span>
+                        </div>
+
+                        <div class="py-2">
+                            <div class="text-xs text-amber-200 uppercase tracking-widest">Diberikan Kepada:</div>
+                            <div id="cert-user-name" class="text-2xl sm:text-3xl font-outfit font-extrabold text-amber-300 underline underline-offset-8 mt-1">Siswa Fisika Hebat</div>
+                        </div>
+
+                        <p class="text-xs sm:text-sm text-amber-100/90 max-w-lg mx-auto leading-relaxed">
+                            Telah berhasil menguasai materi <strong>Besaran Pokok, Besaran Turunan, Satuan Internasional (SI), Dimensi & Pengukuran Presisi</strong> dalam aplikasi Fisika Kuliner khas Jawa Timur.
+                        </p>
+
+                        <div class="grid grid-cols-3 gap-2 pt-4 border-t border-amber-500/30 text-center">
+                            <div>
+                                <div class="text-[10px] text-amber-300/80">NILAI AKHIR</div>
+                                <div id="cert-final-score" class="text-xl font-bold font-mono text-amber-400">100</div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] text-amber-300/80">PREDIKAT</div>
+                                <div id="cert-grade" class="text-xl font-bold text-green-400">Sangat Memuaskan</div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] text-amber-300/80">GELAR</div>
+                                <div id="cert-title" class="text-xs sm:text-sm font-bold text-amber-300 mt-1">Master Physics Chef</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Form to Customize Certificate -->
+                <div class="max-w-md mx-auto flex flex-col sm:flex-row gap-3 pt-2">
+                    <input type="text" id="cert-input-name" placeholder="Masukkan Nama Lengkap Anda" class="flex-1 px-4 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <button onclick="updateCertName()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md transition-all">
+                        Update Sertifikat
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-amber-950 text-amber-200/80 border-t border-amber-800/40 py-6 mt-12 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+            <div>
+                <p class="font-bold text-amber-100">Lab & Game Fisika Interaktif - Besaran dan Satuan SMA Kelas 10</p>
+                <p class="text-[11px] text-amber-300/70">Mengintegrasikan kearifan lokal kuliner khas Jawa Timur (Rawon, Soto, Rujak Cingur, Tahu Tek).</p>
+            </div>
+            <div class="flex items-center gap-3 text-amber-300">
+                <span class="bg-amber-900/80 px-3 py-1 rounded-full border border-amber-700/50">Kurikulum Merdeka</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* GLOBAL APPLICATION STATE */
+        const gameState = {
+            score: 0,
+            rank: 'Asisten Dapur',
+            currentTab: 'materi',
+            labSampleVernier: 0,
+            labSampleMicro: 0,
+            vernierPos: 0,
+            microPos: 0,
+            scaleMass: 150,
+            cylinderVol: 200,
+            lvl1SortedCount: 0,
+            lvl2Index: 0,
+            lvl2Score: 0,
+            quizIndex: 0,
+            quizScore: 0,
+            userName: 'Siswa Fisika Hebat'
+        };
+
+        /* WEB AUDIO API SYNTHESIZER FOR SOUND EFFECTS */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'success') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.setValueAtTime(140, now + 0.1);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+        }
+
+        /* TAB SWITCHER LOGIC */
+        function switchTab(tabId) {
+            playSound('click');
+            gameState.currentTab = tabId;
+
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
+
+            // Deactivate all buttons
+            document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-slate-900', 'shadow-md');
+                btn.classList.add('text-amber-200');
+            });
+
+            // Show selected tab
+            const targetTab = document.getElementById('tab-' + tabId);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                targetTab.classList.add('block');
+            }
+
+            // Activate button
+            const activeBtn = document.getElementById('tab-btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-amber-500', 'text-slate-900', 'shadow-md');
+                activeBtn.classList.remove('text-amber-200');
+            }
+
+            // Trigger canvas redraws if entering lab
+            if (tabId === 'lab') {
+                setTimeout(() => {
+                    drawVernierCanvas();
+                    drawMicroCanvas();
+                }, 100);
+            }
+        }
+
+        /* TOAST NOTIFICATION SYSTEM */
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = 'bg-slate-800 text-white border-slate-700';
+            let icon = 'fa-circle-info';
+
+            if (type === 'success') {
+                bgClass = 'bg-green-800 text-green-100 border-green-600';
+                icon = 'fa-circle-check';
+            } else if (type === 'error') {
+                bgClass = 'bg-red-800 text-red-100 border-red-600';
+                icon = 'fa-triangle-exclamation';
+            }
+
+            toast.className = `px-4 py-3 rounded-xl border shadow-lg flex items-center gap-3 text-xs font-semibold backdrop-blur-md transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        /* SCORE & RANK SYSTEM */
+        function addScore(pts) {
+            gameState.score += pts;
+            document.getElementById('nav-score').innerText = gameState.score;
+
+            // Update rank title
+            if (gameState.score >= 300) {
+                gameState.rank = 'Master Physics Chef';
+            } else if (gameState.score >= 150) {
+                gameState.rank = 'Chef Fisika Madya';
+            } else {
+                gameState.rank = 'Asisten Dapur';
+            }
+
+            document.getElementById('nav-rank').innerText = gameState.rank;
+            document.getElementById('cert-final-score').innerText = gameState.score;
+            document.getElementById('cert-title').innerText = gameState.rank;
+        }
+
+        /* LAB SIMULATOR 1: VERNIER CALIPER (JANGKA SORONG) */
+        const vernierSamples = [
+            { name: "Bakso Malang", targetVal: 3.42, unit: "cm", color: "#854d0e" },
+            { name: "Tahu Goreng Kediri", targetVal: 4.16, unit: "cm", color: "#d97706" },
+            { name: "Onde-Onde Mojokerto", targetVal: 2.75, unit: "cm", color: "#b45309" }
+        ];
+
+        function switchLabSim(simId) {
+            playSound('click');
+            document.querySelectorAll('.lab-sim-container').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.lab-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-600', 'text-white', 'shadow-sm');
+                btn.classList.add('text-amber-900');
+            });
+
+            document.getElementById('sim-' + simId).classList.remove('hidden');
+            const activeBtn = document.getElementById('lab-btn-' + simId);
+            activeBtn.classList.add('bg-amber-600', 'text-white', 'shadow-sm');
+            activeBtn.classList.remove('text-amber-900');
+
+            if (simId === 'vernier') drawVernierCanvas();
+            if (simId === 'micrometer') drawMicroCanvas();
+        }
+
+        function changeVernierSample() {
+            const idx = parseInt(document.getElementById('vernier-sample-select').value);
+            gameState.labSampleVernier = idx;
+            document.getElementById('vernier-sample-label').innerText = "Objek: " + vernierSamples[idx].name;
+            drawVernierCanvas();
+        }
+
+        function updateVernierSim() {
+            const val = parseFloat(document.getElementById('vernierSlider').value);
+            gameState.vernierPos = val;
+            document.getElementById('vernier-slider-val').innerText = val.toFixed(2) + " cm";
+            drawVernierCanvas();
+        }
+
+        function drawVernierCanvas() {
+            const canvas = document.getElementById('vernierCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Scale factor: 1 cm = 80 pixels
+            const scale = 80;
+            const startX = 60;
+            const mainY = 60;
+
+            // 1. Draw Main Scale (Skala Utama - Fixed Beam)
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillRect(startX - 20, mainY, scale * 7 + 40, 50);
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(startX - 20, mainY, scale * 7 + 40, 50);
+
+            // Ticks on Main Scale (cm and mm)
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 12px monospace';
+            for (let cm = 0; cm <= 7; cm++) {
+                const x = startX + cm * scale;
+                // cm tick
+                ctx.beginPath();
+                ctx.moveTo(x, mainY);
+                ctx.lineTo(x, mainY + 25);
+                ctx.stroke();
+                ctx.fillText(cm.toString(), x - 4, mainY + 38);
+
+                // mm sub-ticks
+                if (cm < 7) {
+                    for (let mm = 1; mm < 10; mm++) {
+                        const mx = x + (mm * scale) / 10;
+                        const h = (mm === 5) ? 18 : 10;
+                        ctx.beginPath();
+                        ctx.moveTo(mx, mainY);
+                        ctx.lineTo(mx, mainY + h);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Fixed Jaw (Left Jaw)
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillRect(startX - 20, mainY, 20, 110);
+            ctx.strokeRect(startX - 20, mainY, 20, 110);
+
+            // 2. Draw Sample Object between Jaws
+            const currentSample = vernierSamples[gameState.labSampleVernier];
+            const sampleWidthPx = currentSample.targetVal * scale;
+            
+            ctx.fillStyle = currentSample.color;
+            ctx.beginPath();
+            ctx.arc(startX + sampleWidthPx / 2, mainY + 70, Math.min(sampleWidthPx / 2, 35), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#292524';
+            ctx.stroke();
+
+            // Label on object
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(currentSample.name, startX + sampleWidthPx / 2, mainY + 74);
+            ctx.textAlign = 'left';
+
+            // 3. Draw Sliding Vernier Scale (Skala Nonius)
+            const sliderVal = gameState.vernierPos;
+            const slidingX = startX + sliderVal * scale;
+
+            // Sliding Jaw Body
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillRect(slidingX, mainY + 50, 0.9 * scale + 30, 60);
+            ctx.strokeStyle = '#334155';
+            ctx.strokeRect(slidingX, mainY + 50, 0.9 * scale + 30, 60);
+
+            // Sliding Jaw Extension
+            ctx.fillRect(slidingX, mainY, 20, 110);
+            ctx.strokeRect(slidingX, mainY, 20, 110);
+
+            // Vernier Ticks (10 divisions representing 0.9 cm = 0.09 cm each)
+            ctx.fillStyle = '#b91c1c';
+            ctx.strokeStyle = '#b91c1c';
+            ctx.font = 'bold 10px monospace';
+            
+            for (let v = 0; v <= 10; v++) {
+                const vx = slidingX + (v * 0.9 * scale) / 10;
+                ctx.beginPath();
+                ctx.moveTo(vx, mainY + 50);
+                ctx.lineTo(vx, mainY + 70);
+                ctx.stroke();
+                if (v % 2 === 0) {
+                    ctx.fillText(v.toString(), vx - 3, mainY + 82);
+                }
+            }
+
+            // Draw alignment helper line if jaws closely match
+            if (Math.abs(sliderVal - currentSample.targetVal) < 0.02) {
+                ctx.strokeStyle = '#22c55e';
+                ctx.lineWidth = 3;
+                const alignedX = startX + currentSample.targetVal * scale;
+                ctx.beginPath();
+                ctx.moveTo(alignedX, mainY - 10);
+                ctx.lineTo(alignedX, mainY + 120);
+                ctx.stroke();
+            }
+        }
+
+        function checkVernierAnswer() {
+            const userAns = parseFloat(document.getElementById('user-vernier-ans').value);
+            const target = vernierSamples[gameState.labSampleVernier].targetVal;
+
+            if (Math.abs(userAns - target) < 0.015) {
+                playSound('success');
+                showToast("Tepat Sekali! Pembacaan Jangka Sorong: " + target + " cm", "success");
+                addScore(25);
+            } else {
+                playSound('error');
+                showToast("Kurang tepat. Coba periksa skala utama dan garis nonius yang berimpit!", "error");
+            }
+        }
+
+        /* LAB SIMULATOR 2: MICROMETER SCREW GAUGE */
+        const microSamples = [
+            { name: "Kerupuk Udang", targetVal: 2.34, unit: "mm", color: "#f97316" },
+            { name: "Daun Pisang Bothok", targetVal: 0.48, unit: "mm", color: "#15803d" },
+            { name: "Emping Melinjo", targetVal: 1.12, unit: "mm", color: "#eab308" }
+        ];
+
+        function changeMicroSample() {
+            const idx = parseInt(document.getElementById('micro-sample-select').value);
+            gameState.labSampleMicro = idx;
+            document.getElementById('micro-sample-label').innerText = "Objek: " + microSamples[idx].name;
+            drawMicroCanvas();
+        }
+
+        function updateMicroSim() {
+            const val = parseFloat(document.getElementById('microSlider').value);
+            gameState.microPos = val;
+            document.getElementById('micro-slider-val').innerText = val.toFixed(2) + " mm";
+            drawMicroCanvas();
+        }
+
+        function drawMicroCanvas() {
+            const canvas = document.getElementById('microCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const scale = 80; // 1 mm = 80 px
+            const startX = 200;
+            const centerY = 110;
+
+            // 1. Frame (C-Shape Frame)
+            ctx.fillStyle = '#475569';
+            ctx.beginPath();
+            ctx.arc(120, centerY, 70, Math.PI * 0.5, Math.PI * 1.5, false);
+            ctx.lineWidth = 30;
+            ctx.strokeStyle = '#334155';
+            ctx.stroke();
+
+            // Anvil (Fixed Spindle)
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillRect(115, centerY - 15, 20, 30);
+
+            // 2. Sample Object
+            const sample = microSamples[gameState.labSampleMicro];
+            const samplePx = sample.targetVal * scale;
+
+            ctx.fillStyle = sample.color;
+            ctx.fillRect(135, centerY - 25, Math.max(samplePx, 4), 50);
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(135, centerY - 25, Math.max(samplePx, 4), 50);
+
+            // 3. Spindle (Moving rod)
+            const sliderVal = gameState.microPos;
+            const spindleX = 135 + sliderVal * scale;
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillRect(spindleX, centerY - 15, startX - spindleX + 100, 30);
+
+            // 4. Main Sleeve Scale (Skala Utama)
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillRect(startX, centerY - 25, 200, 50);
+            ctx.strokeStyle = '#475569';
+            ctx.strokeRect(startX, centerY - 25, 200, 50);
+
+            // Datum Line (Garis Datum)
+            ctx.strokeStyle = '#b91c1c';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(startX, centerY);
+            ctx.lineTo(startX + 200, centerY);
+            ctx.stroke();
+
+            // Main scale ticks (mm and 0.5 mm)
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1.5;
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 11px monospace';
+
+            for (let mm = 0; mm <= 5; mm++) {
+                const tx = startX + mm * scale;
+                // Top ticks (1 mm)
+                ctx.beginPath();
+                ctx.moveTo(tx, centerY - 25);
+                ctx.lineTo(tx, centerY - 8);
+                ctx.stroke();
+                ctx.fillText(mm.toString(), tx - 3, centerY - 28);
+
+                // Bottom ticks (0.5 mm)
+                if (mm < 5) {
+                    const hx = tx + scale / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(hx, centerY);
+                    ctx.lineTo(hx, centerY + 15);
+                    ctx.stroke();
+                }
+            }
+
+            // 5. Thimble Scale (Skala Putar / Nonius)
+            const thimbleX = startX + sliderVal * scale;
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillRect(thimbleX, centerY - 40, 80, 80);
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(thimbleX, centerY - 40, 80, 80);
+
+            // Thimble Divisions (50 divisions)
+            const thimbleFrac = (sliderVal % 0.5) / 0.5; // 0 to 1
+            const baseDiv = Math.floor((sliderVal % 1) * 50);
+
+            ctx.strokeStyle = '#b91c1c';
+            ctx.fillStyle = '#b91c1c';
+            ctx.font = 'bold 10px monospace';
+
+            for (let d = -3; d <= 3; d++) {
+                const divNum = (baseDiv + d + 50) % 50;
+                const dy = centerY - d * 12;
+                if (dy >= centerY - 35 && dy <= centerY + 35) {
+                    ctx.beginPath();
+                    ctx.moveTo(thimbleX, dy);
+                    ctx.lineTo(thimbleX + 20, dy);
+                    ctx.stroke();
+                    ctx.fillText(divNum.toString(), thimbleX + 24, dy + 3);
+                }
+            }
+        }
+
+        function checkMicroAnswer() {
+            const userAns = parseFloat(document.getElementById('user-micro-ans').value);
+            const target = microSamples[gameState.labSampleMicro].targetVal;
+
+            if (Math.abs(userAns - target) < 0.015) {
+                playSound('success');
+                showToast("Sempurna! Ketebalan Sampel: " + target + " mm", "success");
+                addScore(25);
+            } else {
+                playSound('error');
+                showToast("Pembacaan belum tepat. Perhatikan skala utama dan skala putar!", "error");
+            }
+        }
+
+        /* LAB SIMULATOR 3: NERACA & GELAS UKUR */
+        function placeOnScale(type, mass) {
+            playSound('click');
+            gameState.scaleMass = mass;
+            document.getElementById('scale-display').innerText = mass.toFixed(2) + " g";
+            
+            const icon = document.getElementById('scale-item-icon');
+            if (type === 'kluwek') icon.innerHTML = '<i class="fa-solid fa-mortar-pestle text-amber-800"></i>';
+            if (type === 'daging') icon.innerHTML = '<i class="fa-solid fa-drumstick-bite text-red-800"></i>';
+            if (type === 'petis') icon.innerHTML = '<i class="fa-solid fa-jar text-slate-800"></i>';
+
+            showToast(`Massa ${type}: ${mass} gram (${(mass/1000).toFixed(3)} kg SI)`, 'info');
+        }
+
+        function setLiquidVolume(mL) {
+            playSound('click');
+            gameState.cylinderVol = mL;
+            const m3 = (mL / 1000000).toFixed(5);
+            document.getElementById('cylinder-display').innerHTML = `${mL} mL ($${m3}\\text{ m}^3$)`;
+            
+            // Adjust visual fill height (max 500 mL)
+            const heightPercent = (mL / 500) * 100;
+            document.getElementById('liquid-level').style.height = heightPercent + "%";
+
+            showToast(`Volume Kuah: ${mL} mL = ${m3} m³ dalam SI`, 'info');
+        }
+
+        /* GAME LEVEL 1: SORTING BESARAN POKOK VS TURUNAN */
+        const lvl1Items = [
+            { id: 1, text: "Massa Daging Rawon (kg)", type: "pokok" },
+            { id: 2, text: "Volume Kuah Soto (m³)", type: "turunan" },
+            { id: 3, text: "Suhu Kuah Mendidih (K)", type: "pokok" },
+            { id: 4, text: "Massa Jenis Petis Udang (kg/m³)", type: "turunan" },
+            { id: 5, text: "Waktu Perebusan Lontong (s)", type: "pokok" },
+            { id: 6, text: "Gaya Mengulek Sambal (N)", type: "turunan" },
+            { id: 7, text: "Panjang Irisan Tahu (m)", type: "pokok" },
+            { id: 8, text: "Tekanan Panci Presto (Pa)", type: "turunan" }
+        ];
+
+        let activeLvl1Card = null;
+
+        function initLevel1() {
+            gameState.lvl1SortedCount = 0;
+            document.getElementById('lvl1-progress').innerText = "0 / 8 Terpilih";
+            document.getElementById('basket-pokok-list').innerHTML = '';
+            document.getElementById('basket-turunan-list').innerHTML = '';
+
+            const container = document.getElementById('lvl1-cards-container');
+            container.innerHTML = '';
+
+            lvl1Items.forEach(item => {
+                const card = document.createElement('button');
+                card.id = 'lvl1-card-' + item.id;
+                card.className = "bg-white border-2 border-amber-300 hover:border-amber-500 text-amber-950 font-bold text-xs px-3 py-2 rounded-xl shadow-sm transition-all transform hover:-translate-y-0.5 active:scale-95";
+                card.innerText = item.text;
+                card.onclick = () => selectLvl1Card(item);
+                container.appendChild(card);
+            });
+        }
+
+        function selectLvl1Card(item) {
+            playSound('click');
+            activeLvl1Card = item;
+            
+            // Highlight card UI
+            document.querySelectorAll('#lvl1-cards-container button').forEach(b => {
+                b.classList.remove('ring-2', 'ring-amber-500', 'bg-amber-100');
+            });
+            const btn = document.getElementById('lvl1-card-' + item.id);
+            if (btn) btn.classList.add('ring-2', 'ring-amber-500', 'bg-amber-100');
+
+            showToast(`Pilih keranjang tempat menyimpan: "${item.text}"`, 'info');
+        }
+
+        function sortCardTo(basketType) {
+            if (!activeLvl1Card) {
+                showToast("Pilih salah satu kartu parameter kuliner terlebih dahulu!", "error");
+                return;
+            }
+
+            if (activeLvl1Card.type === basketType) {
+                playSound('success');
+                showToast("Benar! Sesuai dengan pengelompokan besaran.", "success");
+                
+                // Move card to basket
+                const cardBtn = document.getElementById('lvl1-card-' + activeLvl1Card.id);
+                if (cardBtn) cardBtn.remove();
+
+                const tag = document.createElement('span');
+                tag.className = "bg-amber-200 text-amber-900 border border-amber-300 px-2 py-1 rounded-lg text-[11px] font-semibold";
+                tag.innerText = activeLvl1Card.text;
+
+                document.getElementById('basket-' + basketType + '-list').appendChild(tag);
+
+                gameState.lvl1SortedCount++;
+                addScore(15);
+                document.getElementById('lvl1-progress').innerText = `${gameState.lvl1SortedCount} / 8 Terpilih`;
+
+                activeLvl1Card = null;
+
+                if (gameState.lvl1SortedCount >= 8) {
+                    showToast("Selamat! Level 1 Pemilahan Pasar Tradisional Selesai!", "success");
+                }
+            } else {
+                playSound('error');
+                showToast("Kurang tepat! Periksa kembali apakah besaran ini Pokok atau Turunan.", "error");
+            }
+        }
+
+        /* GAME LEVEL 2: CHEF CALCULATION & CONVERSION */
+        const lvl2Questions = [
+            {
+                title: "1. Suhu Kuah Soto Lamongan",
+                desc: "Bu Sastro mengukur suhu kuah soto lamongan yang mendidih adalah 85°C. Berapakah suhu kuah tersebut dalam Satuan Internasional (SI) / Kelvin?",
+                formula: "K = °C + 273",
+                ans: 358,
+                unit: "K",
+                explanation: "Suhu SI diukur dalam Kelvin (K). $85 + 273 = 358\\text{ K}$."
+            },
+            {
+                title: "2. Massa Jenis Petis Udang Sidoarjo",
+                desc: "Sampel petis udang memiliki massa 500 gram (0,5 kg) dan volume 250 cm³ (0,00025 m³). Hitunglah massa jenis ($\rho$) petis udang tersebut dalam kg/m³!",
+                formula: "\\rho = \\frac{m}{V}",
+                ans: 2000,
+                unit: "kg/m³",
+                explanation: "$\\rho = 0{,}5\\text{ kg} / 0{,}00025\\text{ m}^3 = 2000\\text{ kg/m}^3$."
+            },
+            {
+                title: "3. Konversi Waktu Perebusan Lontong",
+                desc: "Chef mengukus lontong Tahu Tek selama 45 menit. Berapakah nilai waktu tersebut jika dikonversi ke satuan SI (sekon)?",
+                formula: "t\\text{ (s)} = \\text{menit} \\times 60",
+                ans: 2700,
+                unit: "sekon",
+                explanation: "$45\\text{ menit} \\times 60\\text{ sekon/menit} = 2700\\text{ sekon}$."
+            },
+            {
+                title: "4. Gaya Mengulek Sambal Rujak Cingur",
+                desc: "Cobek batu memberikan percepatan $2\\text{ m/s}^2$ pada bumbu kacang bermassa $0{,}5\\text{ kg}$. Berapakah gaya ulek ($F$) dalam Newton ($N$)?",
+                formula: "F = m \\cdot a",
+                ans: 1,
+                unit: "N",
+                explanation: "$F = 0{,}5\\text{ kg} \\times 2\\text{ m/s}^2 = 1\\text{ N}$."
+            }
+        ];
+
+        function renderLvl2Question() {
+            const q = lvl2Questions[gameState.lvl2Index];
+            document.getElementById('lvl2-question-num').innerText = `${gameState.lvl2Index + 1} dari ${lvl2Questions.length}`;
+
+            const box = document.getElementById('lvl2-card-box');
+            box.innerHTML = `
+                <div class="space-y-3">
+                    <h4 class="font-outfit font-bold text-amber-950 text-lg">${q.title}</h4>
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${q.desc}</p>
+                    <div class="bg-amber-100/80 p-2.5 rounded-xl border border-amber-300 text-xs text-amber-900 font-mono">
+                        💡 Rumus Bantuan: ${q.formula}
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <input type="number" id="lvl2-user-ans" placeholder="Jawaban angka" class="px-4 py-2 rounded-xl border border-slate-300 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-amber-500 w-36">
+                        <span class="text-xs font-bold text-slate-600">${q.unit}</span>
+                        <button onclick="checkLvl2Ans()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md transition-all">
+                            Jawab & Lanjut
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkLvl2Ans() {
+            const userVal = parseFloat(document.getElementById('lvl2-user-ans').value);
+            const q = lvl2Questions[gameState.lvl2Index];
+
+            if (Math.abs(userVal - q.ans) < 0.1) {
+                playSound('success');
+                showToast("Benar! " + q.explanation, "success");
+                addScore(30);
+
+                if (gameState.lvl2Index < lvl2Questions.length - 1) {
+                    gameState.lvl2Index++;
+                    renderLvl2Question();
+                } else {
+                    showToast("Selamat! Tantangan Perhitungan Dapur Selesai!", "success");
+                }
+            } else {
+                playSound('error');
+                showToast("Jawaban belum tepat. Coba hitung ulang dengan rumus petunjuk!", "error");
+            }
+        }
+
+        /* GAME LEVEL 3: MATCHING FESTIVAL DIMENSI */
+        const lvl3Items = [
+            { besaran: "Massa Daging Rawon", unit: "Kilogram (kg)", dimension: "[M]" },
+            { besaran: "Volume Kuah Soto", unit: "Meter kubik (m³)", dimension: "[L]³" },
+            { besaran: "Massa Jenis Petis", unit: "kg/m³", dimension: "[M][L]⁻³" },
+            { besaran: "Gaya Ulek Sambal", unit: "Newton (N)", dimension: "[M][L][T]⁻²" }
+        ];
+
+        function renderLvl3Game() {
+            const container = document.getElementById('lvl3-grid-container');
+            container.innerHTML = '';
+
+            lvl3Items.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-amber-50/80 p-4 rounded-xl border border-amber-200 space-y-2 flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="font-outfit font-bold text-amber-900 text-base">${item.besaran}</div>
+                        <div class="text-xs text-slate-500">Satuan SI: ${item.unit}</div>
+                    </div>
+                    <div class="flex items-center gap-2 pt-2 border-t border-amber-200">
+                        <label class="text-xs font-semibold text-slate-700">Pilih Dimensi:</label>
+                        <select id="lvl3-select-${idx}" class="bg-white border border-slate-300 rounded-lg text-xs font-mono font-bold px-2 py-1">
+                            <option value="">-- Pilih --</option>
+                            <option value="[M]">[M]</option>
+                            <option value="[L]³">[L]³</option>
+                            <option value="[M][L]⁻³">[M][L]⁻³</option>
+                            <option value="[M][L][T]⁻²">[M][L][T]⁻²</option>
+                        </select>
+                        <button onclick="checkLvl3Match(${idx})" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-1 rounded-lg">Cek</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkLvl3Match(idx) {
+            const val = document.getElementById(`lvl3-select-${idx}`).value;
+            const target = lvl3Items[idx].dimension;
+
+            if (val === target) {
+                playSound('success');
+                showToast(`Tepat Sekali! Dimensi ${lvl3Items[idx].besaran} adalah ${target}`, 'success');
+                addScore(25);
+            } else {
+                playSound('error');
+                showToast("Dimensi yang dipilih belum cocok!", "error");
+            }
+        }
+
+        function loadGameLevel(lvl) {
+            playSound('click');
+            document.querySelectorAll('.game-level-block').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.game-lvl-btn').forEach(b => {
+                b.classList.remove('bg-amber-600', 'text-white');
+                b.classList.add('bg-slate-200', 'text-slate-700');
+            });
+
+            document.getElementById('game-level-' + lvl).classList.remove('hidden');
+            const activeBtn = document.getElementById('lvl-btn-' + lvl);
+            activeBtn.classList.add('bg-amber-600', 'text-white');
+            activeBtn.classList.remove('bg-slate-200', 'text-slate-700');
+
+            if (lvl === 1) initLevel1();
+            if (lvl === 2) renderLvl2Question();
+            if (lvl === 3) renderLvl3Game();
+        }
+
+        /* TAB 4: EVALUASI & SERTIFIKAT */
+        const quizQuestions = [
+            {
+                q: "Di antara pilihan berikut, manakah yang seluruhnya termasuk dalam Besaran Pokok Satuan Internasional (SI)?",
+                opts: [
+                    "Massa, Suhu, Waktu, Kuat Arus",
+                    "Volume, Massa Jenis, Panjang, Kecepatan",
+                    "Gaya, Tekanan, Jumlah Zat, Intensitas Cahaya",
+                    "Luas, Energi, Waktu, Massa"
+                ],
+                ans: 0
+            },
+            {
+                q: "Hasil pengukuran diameter Bakso Malang menggunakan Jangka Sorong menunjukkan Skala Utama 3,4 cm dan Skala Nonius garis ke-2 yang berimpit. Berapakah pembacaan totalnya?",
+                opts: ["3,42 cm", "3,60 cm", "3,402 cm", "3,24 cm"],
+                ans: 0
+            },
+            {
+                q: "Dimensi dari besaran Massa Jenis Petis Udang ($\rho = m/V$) adalah...",
+                opts: ["[M][L]⁻³", "[M][L]³", "[M][T]⁻²", "[L]³"],
+                ans: 0
+            },
+            {
+                q: "Suatu bahan bumbu Rawon diukur ketebalannya menggunakan Mikrometer Sekrup. Jika skala utama menunjukkan 2,5 mm dan skala putar di angka 34, maka hasil pengukurannya adalah...",
+                opts: ["2,84 mm", "2,34 mm", "2,534 mm", "2,05 mm"],
+                ans: 0
+            },
+            {
+                q: "Suhu kuah Soto Lamongan yang diukur sebesar 100°C setara dengan ... Kelvin (K).",
+                opts: ["373 K", "273 K", "100 K", "400 K"],
+                ans: 0
+            }
+        ];
+
+        function startQuiz() {
+            playSound('click');
+            gameState.quizIndex = 0;
+            gameState.quizScore = 0;
+            document.getElementById('quiz-active-box').classList.remove('hidden');
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const q = quizQuestions[gameState.quizIndex];
+            document.getElementById('quiz-q-num').innerText = `Soal ${gameState.quizIndex + 1} dari ${quizQuestions.length}`;
+            document.getElementById('quiz-question-text').innerText = q.q;
+
+            const container = document.getElementById('quiz-options-container');
+            container.innerHTML = '';
+
+            q.opts.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-amber-500 hover:bg-amber-50 text-xs sm:text-sm font-semibold transition-all flex items-center gap-3";
+                btn.innerHTML = `<span class="w-6 h-6 bg-slate-200 rounded-full flex items-center justify-center text-xs font-bold text-slate-700">${String.fromCharCode(65 + idx)}</span> <span>${opt}</span>`;
+                btn.onclick = () => selectQuizOpt(idx, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        let selectedQuizAns = null;
+
+        function selectQuizOpt(idx, btnEl) {
+            playSound('click');
+            selectedQuizAns = idx;
+            document.querySelectorAll('#quiz-options-container button').forEach(b => {
+                b.classList.remove('bg-amber-100', 'border-amber-500', 'ring-2', 'ring-amber-400');
+            });
+            btnEl.classList.add('bg-amber-100', 'border-amber-500', 'ring-2', 'ring-amber-400');
+        }
+
+        function nextQuizQuestion() {
+            if (selectedQuizAns === null) {
+                showToast("Pilih salah satu jawaban terlebih dahulu!", "error");
+                return;
+            }
+
+            const q = quizQuestions[gameState.quizIndex];
+            if (selectedQuizAns === q.ans) {
+                gameState.quizScore += 20;
+            }
+
+            selectedQuizAns = null;
+            gameState.quizIndex++;
+
+            if (gameState.quizIndex < quizQuestions.length) {
+                renderQuizQuestion();
+            } else {
+                playSound('success');
+                document.getElementById('quiz-active-box').classList.add('hidden');
+                addScore(gameState.quizScore);
+                showToast(`Uji Kompetensi Selesai! Skor Anda: ${gameState.quizScore}`, 'success');
+            }
+        }
+
+        function updateCertName() {
+            playSound('click');
+            const name = document.getElementById('cert-input-name').value.trim();
+            if (name) {
+                gameState.userName = name;
+                document.getElementById('cert-user-name').innerText = name;
+                showToast("Nama pada sertifikat berhasil diperbarui!", "success");
+            }
+        }
+
+        /* INITIALIZATION ON WINDOW LOAD */
+        window.onload = function() {
+            // Draw initial simulators
+            drawVernierCanvas();
+            drawMicroCanvas();
+
+            // Initialize level 1 game elements
+            initLevel1();
+
+            // Setup canvas window resizing callback
+            window.addEventListener('resize', () => {
+                drawVernierCanvas();
+                drawMicroCanvas();
+            });
+
+            showToast("Selamat Datang di Lab Fisika Kuliner Jawa Timur!", "info");
+        };
+    </script>
+</body>
+</html>
